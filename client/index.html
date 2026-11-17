@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Fighter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ЭКРАН 1: Главное меню (Лобби) -->
+    <div id="menu-screen" class="screen active">
+      <h1>PYTHON FIGHTER</h1>
+      
+      <div class="nickname-box">
+        <input type="text" id="input-nick" placeholder="Твой никнейм" maxlength="12" required>
+      </div>
+
+      <div class="menu-buttons">
+        <button id="btn-create">Создать комнату</button>
+        
+        <div class="join-box">
+          <input type="text" id="input-code" placeholder="Введите код" maxlength="6">
+          <button id="btn-join">Войти</button>
+        </div>
+      </div>
+      <p id="menu-error" class="error"></p>
+    </div>
+
+    <!-- ЭКРАН 2: Ожидание игрока -->
+    <div id="wait-screen" class="screen">
+      <h2>Ожидание соперника...</h2>
+      <p id="my-nick-display" style="font-size: 20px; margin-bottom: 10px; color: #aaa;"></p>
+      <p>Отправь этот код другу:</p>
+      <div id="room-code-display">XXXXXX</div>
+    </div>
+
+    <!-- ЭКРАН 3: Игра (ТЕККЕН СТИЛЬ) -->
+    <div id="game-screen" class="screen">
+      
+      <!-- Арена с бойцами на заднем фоне -->
+      <div class="arena" id="arena">
+        <div class="sprite left" id="sprite1"></div>
+        <div class="sprite right" id="sprite2"></div>
+      </div>
+
+      <!-- Интерфейс поверх арены -->
+      <div class="ui-overlay">
+        <div class="hp-bars">
+          <div class="player-hp">
+            <span id="nick1">Игрок 1</span>
+            <div class="hp-bar"><div id="hp1" class="hp-fill"></div></div>
+          </div>
+          <div class="player-hp right-align">
+            <span id="nick2">Игрок 2</span>
+            <div class="hp-bar"><div id="hp2" class="hp-fill right-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <div id="question-code" class="question-text"></div>
+          <div id="options-box" class="options"></div>
+        </div>
+        
+        <div id="timer" class="timer-circle">10</div>
+      </div>
+    </div>
+
+    <!-- ЭКРАН 4: Конец игры -->
+    <div id="end-screen" class="screen">
+      <h1 id="end-title">ПОБЕДА!</h1>
+      <p id="end-desc" style="font-size: 20px; margin-bottom: 30px;"></p>
+      <button id="btn-restart">Играть снова</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

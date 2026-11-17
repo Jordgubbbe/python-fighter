@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Press Start 2P', 'Courier New', monospace; /* Пиксельный шрифт */
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  width: 100%;
+  max-width: 1000px; /* Сделали шире для арены */
+  height: 90vh;
+  padding: 20px;
+}
+
+.screen {
+  display: none;
+  text-align: center;
+  background: #1a1a1a;
+  padding: 40px;
+  border: 4px solid #555;
+  border-radius: 8px;
+  height: 100%;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 40px;
+  color: #f7df1e;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0 #b30000;
+}
+
+/* Меню */
+button {
+  background: #3776ab;
+  color: white;
+  border: 4px solid #fff;
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.1s;
+  font-family: 'Press Start 2P', monospace;
+}
+
+button:hover {
+  background: #2c5e8a;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #000;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.nickname-box {
+  margin-bottom: 30px;
+}
+
+#input-nick, input {
+  width: 300px;
+  padding: 15px;
+  font-size: 16px;
+  border: 4px solid #f7df1e;
+  background: #111;
+  color: #f7df1e;
+  text-align: center;
+  font-weight: bold;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.join-box {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+#input-code { width: 150px; }
+
+#room-code-display {
+  font-size: 40px;
+  letter-spacing: 5px;
+  color: #f7df1e;
+  font-weight: bold;
+  margin: 20px 0;
+  padding: 20px;
+  border: 4px dashed #f7df1e;
+}
+
+/* --- ИГРОВОЙ ЭКРАН (АРЕНА) --- */
+#game-screen {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  border: 8px solid #333;
+  /* Крутой пиксельный фон арены (храм/подземелье) */
+  background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+  background-color: #222;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+}
+
+/* Затемнение фона, чтобы бойцы выделялись */
+.arena {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 50px 50px 50px;
+}
+
+/* БОЙЦЫ */
+.sprite {
+  width: 250px;
+  height: 350px;
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  transition: transform 0.1s, filter 0.2s;
+  position: relative;
+  z-index: 2;
+}
+
+/* Ссылки на пиксельных бойцов (ninja и fighter) */
+.sprite.left { 
+  background-image: url('https://i.imgur.com/k7Y9w5O.png'); 
+  transform: scaleX(1);
+}
+.sprite.right { 
+  background-image: url('https://i.imgur.com/P4G5b8q.png'); 
+  transform: scaleX(-1); 
+}
+
+/* Тряска при ударе */
+.shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-10px, 5px, 0); }
+  40% { transform: translate3d(10px, -5px, 0); }
+  60% { transform: translate3d(-10px, 0, 0); }
+  80% { transform: translate3d(10px, 0, 0); }
+}
+
+/* Мигание красным при получении урона */
+.sprite.hurt { filter: brightness(0.5) sepia(1) hue-rotate(-50deg) saturate(5); }
+
+/* --- UI ПОВЕРХ АРЕНЫ --- */
+.ui-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  pointer-events: none; /* Пропускаем клики к кнопкам */
+  z-index: 10;
+}
+
+/* HP бары как в Теккене */
+.hp-bars {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.player-hp {
+  flex: 1;
+  background: rgba(0,0,0,0.7);
+  padding: 10px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+}
+
+.player-hp.right-align { text-align: right; }
+
+.player-hp span {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 8px;
+  color: #f7df1e;
+}
+
+.hp-bar {
+  width: 100%;
+  height: 25px;
+  background: #550000;
+  border: 2px solid #000;
+}
+
+.hp-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff0000, #ffcc00);
+  transition: width 0.3s;
+}
+.hp-fill.right-fill {
+  float: right;
+}
+
+/* Блок с вопросами внизу */
+.question-box {
+  background: rgba(0,0,0,0.85);
+  border: 4px solid #f7df1e;
+  padding: 20px;
+  border-radius: 8px;
+  pointer-events: auto; /* Возвращаем клики */
+}
+
+.question-text {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.options button {
+  background: #222;
+  border: 2px solid #777;
+  font-size: 12px;
+  padding: 10px;
+  box-shadow: none;
+}
+
+.options button:hover {
+  background: #444;
+  border-color: #f7df1e;
+  transform: none;
+  box-shadow: none;
+}
+
+.options button.selected {
+  background: #f7df1e;
+  color: #000;
+}
+
+/* Таймер */
+.timer-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
+  color: #ff4444;
+  font-weight: bold;
+  text-shadow: 4px 4px 0 #000, 0 0 20px #ff0000;
+  pointer-events: none;
+}
+
+/* Экран победы */
+#end-title.win { color: #00ff00; text-shadow: 0 0 20px #00ff00; }
+#end-title.lose { color: #ff4444; text-shadow: 0 0 20px #ff4444; }
+#end-title.draw { color: #f7df1e; text-shadow: 0 0 20px #f7df1e; }
+
+.error { color: #ff4444; margin-top: 15px; font-size: 12px;}
